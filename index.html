@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8ff" />
+    <meta
+      name="description"
+      content="Rate card layanan kreatif dengan tampilan Material 3 dan morphoglass."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>RateCraft | Rate Card</title>
+    <style>
+      :root {
+        --primary: #2c5f9e;
+        --on-primary: #ffffff;
+        --primary-container: #d6e3ff;
+        --on-primary-container: #001b3d;
+        --surface: #f7f8ff;
+        --surface-dim: #dfe2ed;
+        --surface-container-low: #f1f3fc;
+        --surface-container: #ebedf7;
+        --surface-container-high: #e5e8f2;
+        --surface-container-highest: #dfe2ed;
+        --on-surface: #191c22;
+        --on-surface-variant: #44474f;
+        --outline: #747780;
+        --outline-variant: #c4c6d0;
+        --tertiary: #78536d;
+        --tertiary-container: #ffd7f3;
+        --shadow: rgba(25, 28, 34, 0.16);
+        --glass: rgba(255, 255, 255, 0.58);
+        --glass-strong: rgba(255, 255, 255, 0.74);
+        --radius-xl: 1.75rem;
+        --radius-lg: 1.35rem;
+        --radius-md: 1rem;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--on-surface);
+        background: var(--surface);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; min-width: 20rem; background: var(--surface); }
+      button, a { font: inherit; }
+      a { color: inherit; text-decoration: none; }
+
+      .ambient {
+        position: fixed;
+        z-index: -1;
+        width: 32rem;
+        height: 32rem;
+        border-radius: 50%;
+        filter: blur(4rem);
+        opacity: 0.46;
+        pointer-events: none;
+      }
+      .ambient--blue { top: -14rem; right: -12rem; background: #bdd3ff; }
+      .ambient--pink { bottom: -18rem; left: -12rem; background: #f6c7e8; }
+
+      .shell { width: min(72rem, calc(100% - 2rem)); margin: 0 auto; }
+      .topbar {
+        position: sticky; top: 1rem; z-index: 10; margin-top: 1rem;
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        padding: 0.85rem 1rem 0.85rem 1.2rem; border: 1px solid rgba(255, 255, 255, 0.74);
+        border-radius: 1.25rem; background: var(--glass); backdrop-filter: blur(20px) saturate(150%);
+        box-shadow: 0 0.65rem 2rem rgba(49, 62, 96, 0.1);
+      }
+      .brand { display: flex; align-items: center; gap: 0.65rem; font-weight: 760; letter-spacing: -0.025em; }
+      .brand-mark {
+        display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.72rem;
+        color: var(--on-primary); background: linear-gradient(145deg, #4a7bc1, var(--primary));
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.4), 0 0.35rem 0.7rem rgba(44, 95, 158, 0.25);
+      }
+      .nav { display: flex; gap: 0.2rem; }
+      .nav a { padding: 0.55rem 0.7rem; border-radius: 999px; color: var(--on-surface-variant); font-size: 0.9rem; }
+      .nav a:hover, .nav a:focus-visible { background: rgba(44, 95, 158, 0.1); color: var(--on-primary-container); outline: none; }
+
+      .hero { display: grid; grid-template-columns: 1.15fr 0.85fr; align-items: center; gap: 3.25rem; padding: 7rem 0 5.5rem; }
+      .eyebrow { margin: 0 0 1rem; color: var(--primary); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { max-width: 9ch; margin-bottom: 1.25rem; font-size: clamp(3rem, 7vw, 5.8rem); line-height: 0.98; letter-spacing: -0.065em; }
+      .lede { max-width: 35rem; margin-bottom: 1.8rem; color: var(--on-surface-variant); font-size: 1.1rem; line-height: 1.65; }
+      .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; }
+      .button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; padding: 0.75rem 1.1rem; border: 1px solid transparent; border-radius: 999px; font-weight: 720; transition: transform 170ms ease, box-shadow 170ms ease, background 170ms ease; }
+      .button:hover { transform: translateY(-2px); }
+      .button:active { transform: translateY(0); }
+      .button--filled { color: var(--on-primary); background: var(--primary); box-shadow: 0 0.65rem 1.15rem rgba(44, 95, 158, 0.22); }
+      .button--filled:hover { background: #214f88; box-shadow: 0 0.8rem 1.45rem rgba(44, 95, 158, 0.28); }
+      .button--text { color: var(--primary); background: transparent; }
+      .button--text:hover { background: rgba(44, 95, 158, 0.1); }
+
+      .hero-orb {
+        position: relative; min-height: 25rem; border: 1px solid rgba(255, 255, 255, 0.75); border-radius: 2.35rem;
+        overflow: hidden; background: linear-gradient(145deg, rgba(230, 240, 255, 0.9), rgba(255, 255, 255, 0.36));
+        box-shadow: 0 1.4rem 3rem rgba(40, 63, 102, 0.15), inset 0 1px rgba(255, 255, 255, 0.9);
+      }
+      .hero-orb::before { content: ""; position: absolute; inset: 19% 23%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f7fbff, #b1caf2 56%, #6a95c9); box-shadow: inset -1.5rem -1.5rem 2.5rem rgba(26, 57, 96, 0.18), 0 2rem 4rem rgba(42, 92, 154, 0.2); }
+      .hero-orb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(125deg, rgba(255, 255, 255, 0.72), transparent 34%, rgba(255, 255, 255, 0.16) 58%, transparent 70%); }
+      .mini-card {
+        position: absolute; z-index: 1; width: min(14.5rem, 63%); padding: 1rem; border: 1px solid rgba(255,255,255,0.8); border-radius: 1.25rem;
+        background: rgba(255, 255, 255, 0.62); backdrop-filter: blur(16px) saturate(145%); box-shadow: 0 0.8rem 1.7rem rgba(29, 51, 89, 0.12);
+      }
+      .mini-card small { display: block; color: var(--on-surface-variant); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+      .mini-card strong { display: block; margin-top: 0.35rem; font-size: 1.35rem; letter-spacing: -0.04em; }
+      .mini-card--one { top: 13%; left: 7%; transform: rotate(-8deg); }
+      .mini-card--two { right: 7%; bottom: 12%; transform: rotate(7deg); }
+
+      .section { padding: 5rem 0; }
+      .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+      .section-head h2 { max-width: 14ch; margin-bottom: 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.05; letter-spacing: -0.055em; }
+      .section-head p { max-width: 30rem; margin-bottom: 0; color: var(--on-surface-variant); line-height: 1.6; }
+
+      .packages { display: grid; grid-template-columns: repeat(3, 1fr); align-items: stretch; gap: 1rem; }
+      .package {
+        position: relative; display: flex; flex-direction: column; min-height: 31rem; padding: 1.55rem; border: 1px solid rgba(255,255,255,0.9); border-radius: var(--radius-xl);
+        background: var(--glass); backdrop-filter: blur(22px) saturate(150%); box-shadow: 0 0.9rem 2rem rgba(37, 57, 92, 0.09);
+      }
+      .package--featured { transform: translateY(-0.9rem); border-color: rgba(44, 95, 158, 0.32); background: var(--glass-strong); box-shadow: 0 1.25rem 2.6rem rgba(44, 95, 158, 0.18); }
+      .recommend { position: absolute; top: -0.85rem; right: 1.25rem; padding: 0.45rem 0.75rem; border-radius: 999px; color: var(--on-primary-container); background: var(--primary-container); font-size: 0.76rem; font-weight: 800; }
+      .package h3 { margin: 0.5rem 0 0.4rem; font-size: 1.45rem; letter-spacing: -0.04em; }
+      .package-desc { min-height: 3rem; color: var(--on-surface-variant); line-height: 1.5; }
+      .price { margin: 1.5rem 0 1.2rem; font-size: clamp(2rem, 3vw, 2.7rem); font-weight: 780; letter-spacing: -0.065em; }
+      .price span { color: var(--on-surface-variant); font-size: 0.86rem; font-weight: 600; letter-spacing: 0; }
+      .divider { height: 1px; margin: 0.25rem 0 1.1rem; background: var(--outline-variant); opacity: 0.7; }
+      .feature-list { display: grid; gap: 0.85rem; margin: 0; padding: 0; list-style: none; }
+      .feature-list li { display: grid; grid-template-columns: 1.25rem 1fr; gap: 0.55rem; color: var(--on-surface-variant); font-size: 0.93rem; line-height: 1.45; }
+      .tick { display: grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 50%; color: var(--on-primary-container); background: var(--primary-container); font-size: 0.72rem; font-weight: 900; }
+      .package .button { width: 100%; margin-top: auto; }
+
+      .detail-grid { display: grid; grid-template-columns: 1.18fr 0.82fr; gap: 1rem; }
+      .glass-panel { border: 1px solid rgba(255,255,255,0.82); border-radius: var(--radius-xl); background: var(--glass); backdrop-filter: blur(20px) saturate(145%); box-shadow: 0 0.8rem 1.9rem rgba(37,57,92,0.08); }
+      .scope { padding: 1.75rem; }
+      .scope h2 { margin-bottom: 1.1rem; font-size: 1.85rem; letter-spacing: -0.045em; }
+      .scope-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1.2rem; padding-top: 1.1rem; border-top: 1px solid var(--outline-variant); }
+      .scope-item { display: flex; gap: 0.7rem; align-items: start; color: var(--on-surface-variant); line-height: 1.45; }
+      .scope-item b { color: var(--on-surface); }
+      .note { padding: 1.75rem; color: var(--on-primary-container); background: linear-gradient(145deg, rgba(214, 227, 255, 0.92), rgba(236, 241, 255, 0.65)); }
+      .note h2 { font-size: 1.85rem; letter-spacing: -0.05em; }
+      .note p { color: #253b5c; line-height: 1.58; }
+      .note .fine { margin-top: 2rem; font-size: 0.84rem; }
+
+      .steps { display: grid; grid-template-columns: 0.8fr 1.2fr 0.8fr; gap: 1rem; }
+      .step { padding: 1.4rem; border-top: 1px solid var(--outline); }
+      .step-number { color: var(--tertiary); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; }
+      .step h3 { margin: 0.75rem 0 0.5rem; font-size: 1.3rem; letter-spacing: -0.035em; }
+      .step p { margin-bottom: 0; color: var(--on-surface-variant); line-height: 1.55; }
+
+      .addons { display: grid; grid-template-columns: 1.1fr 0.9fr 0.9fr; grid-template-rows: auto auto; gap: 1rem; }
+      .addon { padding: 1.35rem; border-radius: var(--radius-lg); background: var(--surface-container); }
+      .addon:first-child { grid-row: span 2; background: var(--tertiary-container); }
+      .addon h3 { margin-bottom: 0.4rem; font-size: 1.12rem; letter-spacing: -0.025em; }
+      .addon p { margin-bottom: 0.8rem; color: var(--on-surface-variant); line-height: 1.45; }
+      .addon strong { font-size: 1.1rem; letter-spacing: -0.025em; }
+
+      .faq { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; }
+      .faq h2 { font-size: clamp(2rem, 4vw, 3.2rem); letter-spacing: -0.06em; }
+      .faq-list { border-top: 1px solid var(--outline-variant); }
+      details { border-bottom: 1px solid var(--outline-variant); }
+      summary { display: flex; justify-content: space-between; gap: 1rem; padding: 1.15rem 0; cursor: pointer; font-weight: 730; list-style: none; }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; color: var(--primary); font-size: 1.3rem; font-weight: 500; }
+      details[open] summary::after { content: "−"; }
+      details p { max-width: 45rem; padding-bottom: 1.15rem; color: var(--on-surface-variant); line-height: 1.55; }
+
+      .cta-panel { position: relative; overflow: hidden; padding: clamp(2rem, 5vw, 4rem); margin: 0 0 5rem; border-radius: 2rem; color: var(--on-primary-container); background: linear-gradient(135deg, #d6e3ff, #f4e8ff 60%, #ffd7f3); box-shadow: 0 1rem 2.7rem rgba(78, 72, 125, 0.15); }
+      .cta-panel::after { content: ""; position: absolute; right: -7rem; top: -12rem; width: 26rem; height: 26rem; border-radius: 50%; background: rgba(255,255,255,0.45); filter: blur(1rem); }
+      .cta-panel > * { position: relative; z-index: 1; }
+      .cta-panel h2 { max-width: 12ch; margin-bottom: 0.85rem; font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.065em; }
+      .cta-panel p { max-width: 34rem; color: #3a4967; line-height: 1.6; }
+      .footer { padding: 0 0 2.75rem; color: var(--on-surface-variant); font-size: 0.85rem; text-align: center; }
+
+      .toast { position: fixed; z-index: 20; right: 1rem; bottom: 1rem; max-width: 22rem; padding: 0.95rem 1.1rem; border: 1px solid rgba(255,255,255,0.8); border-radius: 1rem; color: var(--on-primary-container); background: rgba(235, 244, 255, 0.9); box-shadow: 0 0.8rem 2rem rgba(32, 58, 96, 0.16); backdrop-filter: blur(18px); opacity: 0; transform: translateY(1rem); pointer-events: none; transition: 220ms ease; }
+      .toast.show { opacity: 1; transform: translateY(0); }
+
+      @media (max-width: 52rem) {
+        .nav { display: none; }
+        .hero, .detail-grid, .faq { grid-template-columns: 1fr; }
+        .hero { gap: 2.25rem; padding: 4.75rem 0 4rem; }
+        .hero-orb { min-height: 19rem; }
+        .packages, .steps { grid-template-columns: 1fr; }
+        .package--featured { transform: none; }
+        .section-head { display: block; }
+        .section-head h2 { margin-bottom: 1rem; }
+        .addons { grid-template-columns: 1fr 1fr; }
+        .addon:first-child { grid-column: span 2; grid-row: auto; }
+      }
+      @media (max-width: 32rem) {
+        .shell { width: min(100% - 1rem, 72rem); }
+        .topbar { padding-inline: 0.75rem; }
+        .scope-items, .addons { grid-template-columns: 1fr; }
+        .addon:first-child { grid-column: auto; }
+        h1 { font-size: 3.1rem; }
+      }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; } }
+    </style>
+  </head>
+  <body>
+    <div class="ambient ambient--blue"></div>
+    <div class="ambient ambient--pink"></div>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="#beranda" aria-label="RateCraft, ke beranda"><span class="brand-mark">R</span><span>RateCraft</span></a>
+        <nav class="nav" aria-label="Navigasi utama"><a href="#paket">Paket</a><a href="#cakupan">Cakupan</a><a href="#add-on">Add-on</a><a href="#tanya">Tanya jawab</a></nav>
+        <a class="button button--filled" href="#pesan">Mulai</a>
+      </header>
+
+      <main id="beranda">
+        <section class="hero" aria-labelledby="hero-title">
+          <div>
+            <p class="eyebrow">Rate card 2026</p>
+            <h1 id="hero-title">Jelas dari awal.</h1>
+            <p class="lede">Paket layanan kreatif yang ringkas, transparan, dan mudah disesuaikan dengan kebutuhan proyek Anda.</p>
+            <div class="hero-actions"><a class="button button--filled" href="#paket">Lihat paket</a><a class="button button--text" href="#cakupan">Yang termasuk</a></div>
+          </div>
+          <div class="hero-orb" aria-label="Ilustrasi abstrak kartu layanan transparan">
+            <div class="mini-card mini-card--one"><small>Mulai dari</small><strong>Rp1,5 jt</strong></div>
+            <div class="mini-card mini-card--two"><small>Paket terpilih</small><strong>Growth</strong></div>
+          </div>
+        </section>
+
+        <section class="section" id="paket" aria-labelledby="paket-title">
+          <div class="section-head"><h2 id="paket-title">Paket yang pas untuk setiap tahap.</h2><p>Setiap paket punya ruang lingkup yang tegas. Pilih titik mulai, lalu tambah kebutuhan spesifik jika diperlukan.</p></div>
+          <div class="packages">
+            <article class="package"><p class="eyebrow">01. Start</p><h3>Essential</h3><p class="package-desc">Untuk kebutuhan desain yang terarah dan cepat.</p><p class="price">Rp1.500.000 <span>/ proyek</span></p><div class="divider"></div><ul class="feature-list"><li><span class="tick">✓</span><span>1 konsep utama</span></li><li><span class="tick">✓</span><span>Hingga 5 aset desain</span></li><li><span class="tick">✓</span><span>1 kali revisi</span></li><li><span class="tick">✓</span><span>Estimasi 3 hari kerja</span></li></ul><button class="button button--text" data-package="Essential">Pilih Essential</button></article>
+            <article class="package package--featured"><span class="recommend">Paling dipilih</span><p class="eyebrow">02. Grow</p><h3>Growth</h3><p class="package-desc">Untuk kampanye yang butuh sistem visual lebih lengkap.</p><p class="price">Rp3.500.000 <span>/ proyek</span></p><div class="divider"></div><ul class="feature-list"><li><span class="tick">✓</span><span>2 arah konsep</span></li><li><span class="tick">✓</span><span>Hingga 12 aset desain</span></li><li><span class="tick">✓</span><span>3 kali revisi</span></li><li><span class="tick">✓</span><span>File final terorganisir</span></li></ul><button class="button button--filled" data-package="Growth">Pilih Growth</button></article>
+            <article class="package"><p class="eyebrow">03. Scale</p><h3>Signature</h3><p class="package-desc">Untuk peluncuran atau identitas yang perlu lebih dalam.</p><p class="price">Rp6.500.000 <span>/ proyek</span></p><div class="divider"></div><ul class="feature-list"><li><span class="tick">✓</span><span>Strategi dan arah visual</span></li><li><span class="tick">✓</span><span>Hingga 24 aset desain</span></li><li><span class="tick">✓</span><span>5 kali revisi</span></li><li><span class="tick">✓</span><span>Prioritas timeline</span></li></ul><button class="button button--text" data-package="Signature">Pilih Signature</button></article>
+          </div>
+        </section>
+
+        <section class="section" id="cakupan" aria-label="Cakupan layanan">
+          <div class="detail-grid"><article class="glass-panel scope"><p class="eyebrow">Di dalam paket</p><h2>Detail kecil yang sudah dipikirkan.</h2><div class="scope-items"><div class="scope-item"><span class="tick">✓</span><span><b>Briefing awal</b><br />Arah kerja yang disepakati bersama.</span></div><div class="scope-item"><span class="tick">✓</span><span><b>File siap pakai</b><br />Format final sesuai kanal penggunaan.</span></div><div class="scope-item"><span class="tick">✓</span><span><b>Catatan revisi</b><br />Setiap umpan balik dirapikan per putaran.</span></div><div class="scope-item"><span class="tick">✓</span><span><b>Serah terima</b><br />Folder rapi agar mudah digunakan lagi.</span></div></div></article><aside class="glass-panel note"><p class="eyebrow">Catatan harga</p><h2>Semua harga belum termasuk biaya produksi.</h2><p>Cetak, talent, iklan, lisensi aset, dan kebutuhan pihak ketiga akan dihitung terpisah setelah brief disetujui.</p><p class="fine">Pembayaran: 50% sebelum mulai, 50% setelah file final disetujui.</p></aside></div>
+        </section>
+
+        <section class="section" aria-labelledby="alur-title"><div class="section-head"><h2 id="alur-title">Alurnya sederhana.</h2><p>Tidak ada proses yang mengambang. Anda tahu apa yang dikirim, kapan, dan apa yang bisa direvisi.</p></div><div class="steps"><article class="step"><span class="step-number">LANGKAH 01</span><h3>Kirim kebutuhan</h3><p>Bagikan tujuan, konten, dan kanal yang ingin digunakan.</p></article><article class="step"><span class="step-number">LANGKAH 02</span><h3>Dapatkan arah</h3><p>Konsep dan timeline dikunci sebelum desain utama dimulai.</p></article><article class="step"><span class="step-number">LANGKAH 03</span><h3>Terima file akhir</h3><p>Desain final disusun rapi untuk dipakai langsung.</p></article></div></section>
+
+        <section class="section" id="add-on" aria-labelledby="addon-title"><div class="section-head"><h2 id="addon-title">Tambahkan hanya yang Anda butuhkan.</h2><p>Biaya add-on berlaku per proyek dan dapat digabungkan dengan paket mana pun.</p></div><div class="addons"><article class="addon"><p class="eyebrow">Paling sering ditambah</p><h3>Template media sosial</h3><p>Sistem template siap edit untuk menjaga konten tetap konsisten setelah proyek selesai.</p><strong>Mulai Rp1.250.000</strong></article><article class="addon"><h3>Copy ringan</h3><p>Caption atau headline singkat untuk aset yang dikerjakan.</p><strong>Rp500.000</strong></article><article class="addon"><h3>Ekspres 48 jam</h3><p>Prioritas pengerjaan saat slot tersedia.</p><strong>+40%</strong></article><article class="addon"><h3>Source file</h3><p>File kerja yang bersih dan dapat diteruskan tim Anda.</p><strong>Rp750.000</strong></article><article class="addon"><h3>Adaptasi ukuran</h3><p>Satu desain utama ke lima ukuran tambahan.</p><strong>Rp350.000</strong></article></div></section>
+
+        <section class="section" id="tanya" aria-labelledby="faq-title"><div class="faq"><div><p class="eyebrow">Tanya jawab</p><h2 id="faq-title">Sebelum kita mulai.</h2></div><div class="faq-list"><details open><summary>Apakah harga bisa disesuaikan?</summary><p>Bisa. Jika cakupan proyek berbeda dari paket di atas, kita susun penawaran khusus berdasarkan tujuan dan output yang diperlukan.</p></details><details><summary>Berapa lama proses revisi?</summary><p>Revisi biasanya dikumpulkan dalam satu dokumen lalu dikerjakan dalam 1 sampai 2 hari kerja, tergantung jumlah dan kompleksitas catatan.</p></details><details><summary>Apakah bisa untuk proyek di luar desain?</summary><p>Bisa dibicarakan. Kirim konteks singkat agar kebutuhan, pihak yang terlibat, dan timeline dapat dipetakan lebih dulu.</p></details></div></div></section>
+
+        <section class="cta-panel" id="pesan" aria-labelledby="pesan-title"><p class="eyebrow">Siap memulai?</p><h2 id="pesan-title">Pilih paket, lalu siapkan brief Anda.</h2><p>Setelah paket dipilih, kumpulkan tujuan proyek, daftar konten, dan tenggat yang diharapkan. Itu cukup untuk memulai percakapan yang efektif.</p><button class="button button--filled" data-package="brief">Siapkan brief</button></section>
+      </main>
+      <footer class="footer">© 2026 RateCraft. Rate card template yang dapat disesuaikan.</footer>
+    </div>
+    <div class="toast" role="status" aria-live="polite" id="toast"></div>
+    <script>
+      const toast = document.getElementById('toast');
+      let toastTimer;
+      document.querySelectorAll('[data-package]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const choice = button.dataset.package;
+          toast.textContent = choice === 'brief' ? 'Brief Anda siap disusun. Ganti tombol ini dengan tautan WhatsApp atau email Anda.' : `Paket ${choice} dipilih. Hubungkan tombol ini ke WhatsApp atau email Anda saat siap menerima pesanan.`;
+          toast.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => toast.classList.remove('show'), 5200);
+        });
+      });
+    </script>
+  </body>
+</html>
+
